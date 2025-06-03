@@ -1,178 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Sorteio de Números</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      padding: 30px;
-      margin: 0;
-    }
+<script>
+  const numerosSorteados = new Set(); // Armazena os números únicos
+  const LIMITE_NUMEROS = 1000;
 
-    /* Layout principal com colunas */
-    .wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
+  function girarRoleta() {
+    const mensagem = document.getElementById("mensagem");
+    const numero = document.getElementById("numero");
+    const historico = document.getElementById("historico");
 
-    /* Coluna dos patrocinadores */
-    .patrocinadores-coluna {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
+    let contador = 0;
+    let maximoGiros = 50;
+    let intervalo = 50;
+    let intervaloID;
 
-    /* Imagens dos patrocinadores */
-    .patrocinadores-coluna img {
-      max-width: 100px;
-      max-height: 80px;
-      object-fit: contain;
-    }
+    mensagem.innerText = "";
+    numero.innerText = "";
 
-    /* Título "PATROCINADORES" acima das colunas */
-    .titulo-lateral {
-      color: #b30000;
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    /* Caixa central com logo e sorteio */
-    .container {
-      background: white;
-      width: 500px;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #ccc;
-      text-align: center;
-    }
-
-    /* Logo do meio */
-    .logo img {
-      max-width: 100%;
-      max-height: 300px;
-      margin-bottom: 20px;
-    }
-
-    /* Botão de sorteio */
-    button {
-      padding: 12px 24px;
-      font-size: 18px;
-      margin-top: 20px;
-      cursor: pointer;
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #1976D2;
-    }
-
-    /* Resultado do sorteio */
-    #resultado {
-      margin-top: 30px;
-      font-size: 48px;
-      color: #2c7a00;
-      font-weight: bold;
-      height: auto;
-      transition: all 0.5s ease;
-    }
-
-    #mensagem {
-      color: #28a745;
-      font-weight: bold;
-    }
-
-    #numero {
-      margin-left: 8px;
-      font-size: 60px;
-    }
-
-    /* Responsividade */
-    @media (max-width: 768px) {
-      .wrapper {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="wrapper">
-
-    <!-- Coluna da esquerda com título e patrocinadores -->
-    <div class="patrocinadores-coluna">
-      <h3 class="titulo-lateral">PATROCINADORES:</h3>
-      <img src="Patrocinadores/pat1.png" alt="Patrocinador 1">
-      <img src="Patrocinadores/pat2.png" alt="Patrocinador 2">
-      <img src="Patrocinadores/pat3.png" alt="Patrocinador 3">
-    </div>
-
-    <!-- Conteúdo principal do sorteio -->
-    <div class="container">
-      <div class="logo">
-        <img src="logo_af/logo.png" alt="Automotive Family">
-      </div>
-      <h1>🎲 Sorteio de Números</h1>
-      <button onclick="girarRoleta()">Girar Números</button>
-      <div id="resultado">
-        <span id="mensagem"></span>
-        <span id="numero"></span>
-      </div>
-    </div>
-
-    <!-- Coluna da direita com título e patrocinadores -->
-    <div class="patrocinadores-coluna">
-      <h3 class="titulo-lateral">PATROCINADORES:</h3>
-      <img src="Patrocinadores/pat4.png" alt="Patrocinador 4">
-      <img src="Patrocinadores/pat5.png" alt="Patrocinador 5">
-      <img src="Patrocinadores/pat6.png" alt="Patrocinador 6">
-    </div>
-
-  </div>
-
-  <!-- Script do sorteio -->
-  <script>
-    function girarRoleta() {
-      const mensagem = document.getElementById("mensagem");
-      const numero = document.getElementById("numero");
-
-      let contador = 0;
-      let maximoGiros = 50;
-      let intervalo = 50;
-      let intervaloID;
-
-      mensagem.innerText = "";
+    if (numerosSorteados.size >= LIMITE_NUMEROS) {
+      mensagem.innerText = "⚠️ Todos os números já foram sorteados!";
       numero.innerText = "";
-
-      intervaloID = setInterval(() => {
-        const numeroTemp = Math.floor(Math.random() * 1000) + 1;
-        numero.innerText = numeroTemp;
-        contador++;
-
-        if (contador >= maximoGiros) {
-          clearInterval(intervaloID);
-          const numeroFinal = Math.floor(Math.random() * 1000) + 1;
-          mensagem.innerText = "🎉 Número sorteado:";
-          numero.innerText = ` ${numeroFinal}`;
-        }
-      }, intervalo);
+      return;
     }
-  </script>
 
-</body>
-</html>
+    intervaloID = setInterval(() => {
+      const numeroTemp = Math.floor(Math.random() * LIMITE_NUMEROS) + 1;
+      numero.innerText = numeroTemp;
+      contador++;
+
+      if (contador >= maximoGiros) {
+        clearInterval(intervaloID);
+        let numeroFinal;
+
+        do {
+          numeroFinal = Math.floor(Math.random() * LIMITE_NUMEROS) + 1;
+        } while (numerosSorteados.has(numeroFinal));
+
+        numerosSorteados.add(numeroFinal);
+        mensagem.innerText = "🎉 Número sorteado:";
+        numero.innerText = ` ${numeroFinal}`;
+
+        atualizarHistorico();
+      }
+    }, intervalo);
+  }
+
+  function reiniciarSorteio() {
+    numerosSorteados.clear();
+    document.getElementById("mensagem").innerText = "";
+    document.getElementById("numero").innerText = "";
+    document.getElementById("historico").innerText = "";
+  }
+
+  function atualizarHistorico() {
+    const historico = document.getElementById("historico");
+    const listaOrdenada = Array.from(numerosSorteados).sort((a, b) => a - b);
+    historico.innerHTML = `<strong>Números sorteados (${listaOrdenada.length}):</strong><br>${listaOrdenada.join(', ')}`;
+  }
+</script>
 
