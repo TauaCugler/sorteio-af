@@ -11,7 +11,6 @@
       margin: 0;
     }
 
-    /* Layout principal com 3 colunas */
     .wrapper {
       display: flex;
       justify-content: center;
@@ -21,7 +20,6 @@
       margin: auto;
     }
 
-    /* Coluna dos patrocinadores */
     .patrocinadores-coluna {
       display: flex;
       flex-direction: column;
@@ -29,14 +27,12 @@
       gap: 20px;
     }
 
-    /* Imagens dos patrocinadores */
     .patrocinadores-coluna img {
       max-width: 100px;
       max-height: 80px;
       object-fit: contain;
     }
 
-    /* Título "PATROCINADORES" nas laterais */
     .titulo-lateral {
       color: #b30000;
       font-size: 20px;
@@ -46,7 +42,6 @@
       text-align: center;
     }
 
-    /* Caixa central branca com o sorteio */
     .container {
       background: white;
       width: 500px;
@@ -56,14 +51,12 @@
       text-align: center;
     }
 
-    /* Logo da marca */
     .logo img {
       max-width: 100%;
       max-height: 300px;
       margin-bottom: 20px;
     }
 
-    /* Botões */
     button {
       padding: 12px 24px;
       font-size: 18px;
@@ -76,13 +69,11 @@
       transition: background-color 0.3s;
     }
 
-    /* Botão vermelho de reinício */
     .reiniciar {
       background-color: #f44336;
       margin-left: 10px;
     }
 
-    /* Exibição do resultado do sorteio */
     #resultado {
       margin-top: 30px;
       font-size: 48px;
@@ -102,7 +93,6 @@
       font-size: 60px;
     }
 
-    /* Área do histórico de sorteios */
     #historico {
       margin-top: 30px;
       font-size: 16px;
@@ -116,7 +106,6 @@
       background-color: #f9f9f9;
     }
 
-    /* Responsivo para celular */
     @media (max-width: 768px) {
       .wrapper {
         flex-direction: column;
@@ -128,8 +117,6 @@
 <body>
 
   <div class="wrapper">
-
-    <!-- Coluna da esquerda com patrocinadores -->
     <div class="patrocinadores-coluna">
       <h3 class="titulo-lateral">PATROCINADORES</h3>
       <img src="Patrocinadores/pat1.png" alt="Patrocinador 1">
@@ -137,40 +124,37 @@
       <img src="Patrocinadores/pat3.png" alt="Patrocinador 3">
     </div>
 
-    <!-- Centro com logo, sorteio e botões -->
     <div class="container">
       <div class="logo">
         <img src="logo_af/logo.png" alt="Automotive Family">
       </div>
       <h1>🎲 Sorteio de Números</h1>
 
-      <!-- Botões de sorteio e reinício -->
       <button onclick="girarRoleta()">Girar Números</button>
       <button class="reiniciar" onclick="reiniciarSorteio()">Reiniciar Sorteio</button>
 
-      <!-- Exibição do resultado -->
       <div id="resultado">
         <span id="mensagem"></span>
         <span id="numero"></span>
       </div>
 
-      <!-- Lista dos números sorteados -->
       <div id="historico"></div>
     </div>
 
-    <!-- Coluna da direita com patrocinadores -->
     <div class="patrocinadores-coluna">
       <h3 class="titulo-lateral">PATROCINADORES</h3>
       <img src="Patrocinadores/pat4.png" alt="Patrocinador 4">
       <img src="Patrocinadores/pat5.png" alt="Patrocinador 5">
       <img src="Patrocinadores/pat6.png" alt="Patrocinador 6">
     </div>
-
   </div>
 
+  <!-- 🎵 Efeito sonoro de tambor -->
+  <audio id="somTambor" src="audio/tambor.mp3" preload="auto"></audio>
+
   <script>
-    const numerosSorteados = new Set(); // Armazena números sorteados sem repetição
-    const LIMITE_NUMEROS = 1000; // Limite total de números sorteados
+    const numerosSorteados = new Set();
+    const LIMITE_NUMEROS = 1000;
 
     function girarRoleta() {
       const mensagem = document.getElementById("mensagem");
@@ -178,21 +162,24 @@
       const historico = document.getElementById("historico");
 
       let contador = 0;
-      let maximoGiros = 50;
-      let intervalo = 50;
+      let maximoGiros = 20;
+      let intervalo = 30;
       let intervaloID;
 
       mensagem.innerText = "";
       numero.innerText = "";
 
-      // Se todos os números foram sorteados, avisa e para
       if (numerosSorteados.size >= LIMITE_NUMEROS) {
         mensagem.innerText = "⚠️ Todos os números já foram sorteados!";
         numero.innerText = "";
         return;
       }
 
-      // Efeito de roleta girando
+      // ▶️ Toca o som do tambor
+      const audio = document.getElementById("somTambor");
+      audio.currentTime = 0;
+      audio.play();
+
       intervaloID = setInterval(() => {
         const numeroTemp = Math.floor(Math.random() * LIMITE_NUMEROS) + 1;
         numero.innerText = numeroTemp;
@@ -200,14 +187,17 @@
 
         if (contador >= maximoGiros) {
           clearInterval(intervaloID);
-          let numeroFinal;
 
-          // Sorteia um número novo (ainda não sorteado)
+          // ⏹️ Para o som do tambor
+          audio.pause();
+          audio.currentTime = 0;
+
+          let numeroFinal;
           do {
             numeroFinal = Math.floor(Math.random() * LIMITE_NUMEROS) + 1;
           } while (numerosSorteados.has(numeroFinal));
 
-          numerosSorteados.add(numeroFinal); // Armazena
+          numerosSorteados.add(numeroFinal);
           mensagem.innerText = "🎉 Número sorteado:";
           numero.innerText = ` ${numeroFinal}`;
 
@@ -217,7 +207,6 @@
     }
 
     function reiniciarSorteio() {
-      // Limpa tudo
       numerosSorteados.clear();
       document.getElementById("mensagem").innerText = "";
       document.getElementById("numero").innerText = "";
@@ -225,7 +214,6 @@
     }
 
     function atualizarHistorico() {
-      // Atualiza a lista de números sorteados (ordenados)
       const historico = document.getElementById("historico");
       const listaOrdenada = Array.from(numerosSorteados).sort((a, b) => a - b);
       historico.innerHTML = `<strong>Números sorteados (${listaOrdenada.length}):</strong><br>${listaOrdenada.join(', ')}`;
@@ -234,4 +222,5 @@
 
 </body>
 </html>
+
 
